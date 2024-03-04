@@ -1,0 +1,7 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "markdown.extension.toc.omittedFromToc": {
+    "README.md": ["# 目次"]
+  }
+}
