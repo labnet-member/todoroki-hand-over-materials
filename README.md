@@ -64,7 +64,7 @@ Toolbox のインストール完了後は IDE のインストールを行う．�
 
 以下の SSH 接続画面が表示されるため，「New Connection」，「ユーザー名」，「IP アドレス」，「秘密鍵のパス」を指定して次に．
 
-![Gateway SSH](images/section_2/Gateway_ssh.png)
+![Gateway SSH](images/section_2/Gateway_SSH.png)
 
 リモートで起動する IDE と起動時のディレクトリを指定して IDE を起動する．IDE は EAP（Early Access Program）以外を指定した方が良い．
 
