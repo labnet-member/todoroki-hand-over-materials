@@ -212,7 +212,7 @@ docker build -t sharedsub:latest -f build/Dockerfile --target deploy ./
 
 ##### クライアント
 
-クライアントは IDE でのビルドのみしか対応していないため，IDE で jar ファイルをビルドしてからコンテナ化する．まず，IDE の上のメニューから Build -> Build Artifacts を選択する．表示される一覧から org.eclipse.paho.sample.mqttv5app:jar -> Build を選択するとビルドが実行される．`targat`ディレクトリに org.eclipse.paho.sample.mqttv5app.jar が作成される．
+クライアントは IDE でのビルドのみしか対応していないため，IDE で jar ファイルをビルドしてからコンテナ化する．クラウドの実験では`Benchmarker.java`を利用する．まず，IDE の上のメニューから Build -> Build Artifacts を選択する．表示される一覧から org.eclipse.paho.sample.mqttv5app:jar -> Build を選択するとビルドが実行される．`targat`ディレクトリに org.eclipse.paho.sample.mqttv5app.jar が作成される．
 
 その後，以下のコマンドを実行することでコンテナ化が実行される．
 
