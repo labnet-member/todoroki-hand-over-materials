@@ -144,6 +144,26 @@ OK をクリックすると右上に実行設定が表示されるので，緑�
 
 ![go run main](images/section_3/go_run_main.png)
 
+IDE での実行ではなく，ビルド後のバイナリを利用して別のマシンで実行したい場合の手順も示す．右上の先ほどの実行設定 -> Edit Configurations をクリックする．
+
+![go build 1](images/section_3/go_build_1.png)
+
+表示された設定の左上にある Copy Configuration をクリックする．
+
+![go build 2](images/section_3/go_build_2.png)
+
+コピーした設定から以下を修正する．OK をクリックすると右上から実行したい設定(IDE で実行 or ビルドのみ)を選択できるので，ビルドを実行する．
+
+- Name：ビルド後に出力したいファイル名（例では broker），
+- Output directory：ファイルを出力する先（例では/home/todoroki/setup/mqttv5-broker/product）
+- Run after build：のチェックを外す
+
+Output directory で指定したディレクトリに移動し，以下のコマンドを実行する．
+
+```bash
+./<ファイル名> -algo <アルゴリズム名>
+```
+
 ## クライアントの実行
 
 Intellij IDEA をソースコードが含まれているプロジェクトを指定して起動する．プロジェクトのディレクトリ構成の内，重要なもののみを以下に示す．
@@ -153,6 +173,8 @@ mqttv5-client
  ├ aws (AWS ECSで利用するディレクトリ)
  ├ build (コンテナ化するためのディレクトリ)
  ├ org.eclipse.paho.sample.mqttv5app
+    ├ META-INF
+      └ MANIFEST.MF
     ├ target (ビルド先のディレクトリ)
     └ src
       └ main
@@ -166,7 +188,7 @@ mqttv5-client
  ├ results (実行結果が出力されるディレクトリ)
 ```
 
-ローカル実験のメインのソースコードは`ShareSample.java`に含まれる．これ以降はこの ShareSample.java を実行する手順を説明する．
+ローカル実験のメインのソースコードは`ShareSample.java`に含まれる．これ以降はこの `ShareSample.java` を実行する手順を説明する．
 
 まず，プロジェクトで利用する Java を設定する．左上の File -> Project Structure 　を選択する．プロジェクトの設定画面が表示されるので Project Settings -> Project -> SDK -> Download JDK を選択する．任意のバージョン（実験時は Version 11 の Amazon Corretto を使用）を選択し，Download をクリックする．OK をクリックすると JDK が自動でインストールされる．
 
@@ -175,6 +197,12 @@ mqttv5-client
 次に`ShareSample.java`の実行方法を説明する．こちらのプロジェクトでは，実行ジの設定が保存されているため，右上に`balanced-processing-time`が表示されていると思われる．この設定について簡単に説明する．まず，右上の三点 -> Edit をクリックする．すると，実行の設定画面が表示される．`balanced-processing-time`は全てのサブスクライバの実行時間が 25msec で設定されており，`unbalanced-processing-time`はサブスクライバの実行時間が 25msec と 50msec の 2 種類で設定されている．再現したい実験に合わせて選択して実行できる．
 
 ![java configure main](images/section_3/java_configure_main.png)
+
+IDE での実行ではなく，ビルド後の jar を利用して別のマシンで実行したい場合の手順も示す．まず，MANIFEST.MF の`Main-Class:`の右を`org.eclipse.paho.sample.mqttv5app.sample.ShareSample`に修正する．その後，IDE の上のメニューから Build -> Build Artifacts を選択する．表示される一覧から org.eclipse.paho.sample.mqttv5app:jar -> Build を選択するとビルドが実行される．targat ディレクトリに org.eclipse.paho.sample.mqttv5app.jar が作成される．その後，jar のある場所で以下のコマンドを実行する（オプションは変更してください）．
+
+```bash
+java -jar org.eclipse.paho.sample.mqttv5app.sample.ShareSample -t 10 -s 3 -i 10 --ping-interval 1000 --process-time 25,25,25 --size 100
+```
 
 # 4. クラウド環境での実行手順
 
@@ -212,7 +240,7 @@ docker build -t sharedsub:latest -f build/Dockerfile --target deploy ./
 
 ##### クライアント
 
-クライアントは IDE でのビルドのみしか対応していないため，IDE で jar ファイルをビルドしてからコンテナ化する．クラウドの実験では`Benchmarker.java`を利用する．まず，IDE の上のメニューから Build -> Build Artifacts を選択する．表示される一覧から org.eclipse.paho.sample.mqttv5app:jar -> Build を選択するとビルドが実行される．`targat`ディレクトリに org.eclipse.paho.sample.mqttv5app.jar が作成される．
+クライアントは IDE でのビルドのみしか対応していないため，IDE で jar ファイルをビルドしてからコンテナ化する．クラウドの実験では`Benchmarker.java`を利用する．まず，MANIFEST.MF の`Main-Class:`の右を`org.eclipse.paho.sample.mqttv5app.benchmarker.Benchmarker`に修正する．その後，IDE の上のメニューから Build -> Build Artifacts を選択する．表示される一覧から org.eclipse.paho.sample.mqttv5app:jar -> Build を選択するとビルドが実行される．`targat`ディレクトリに org.eclipse.paho.sample.mqttv5app.jar が作成される．
 
 その後，以下のコマンドを実行することでコンテナ化が実行される．
 
