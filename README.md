@@ -1,5 +1,6 @@
 # 目次
 
+- [目次](#目次)
 - [1. 概要](#1-概要)
 - [2. 開発環境の構築手順](#2-開発環境の構築手順)
   - [ローカルのマシンにインストール](#ローカルのマシンにインストール)
@@ -364,10 +365,16 @@ aws ecs register-task-definition --cli-input-json file://aws/start-publisher.jso
 aws servicediscovery create-private-dns-namespace --name iot-simulator --vpc ${VPC_ID}
 ```
 
-上記のコマンド実行後に含まれる`OperationId`は次のコマンドに利用する．次のコマンドでサービスディスカバリーサービスを作成する．ただし，ネームスペースの作成がクラウド上で完了するまで少し時間が掛かるため，失敗する場合は再度実行する．
+上記のコマンド実行後に含まれる`OperationId`は次のコマンドに利用する．次のコマンドを実行して`NamespapceId`を取得する．ただし，ネームスペースの作成がクラウド上で完了するまで少し時間が掛かるため，失敗する場合は再度実行する．
 
 ```bash
-aws servicediscovery create-service --name broker --dns-config "NamespaceId="${OperationId}",DnsRecords=[{Type="A",TTL="300"}]" --health-check-custom-config FailureThreshold=1
+aws servicediscovery get-operation --operation-id ${OperationId}
+```
+
+ネームスペースの作成完了後，次のコマンドでサービスディスカバリーサービスを作成する．
+
+```bash
+aws servicediscovery create-service --name broker --dns-config "NamespaceId="${NamespapceId}",DnsRecords=[{Type="A",TTL="300"}]" --health-check-custom-config FailureThreshold=1
 ```
 
 ### ECS サービス（ブローカ）の起動
